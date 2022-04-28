@@ -1,23 +1,20 @@
-import { Post } from './entities/Post';
-import { __prod__ } from './constants';
 import { MikroORM } from '@mikro-orm/core';
 import path from 'path';
 import dotenv from 'dotenv';
-import { Comment } from './entities/Comment';
 dotenv.config();
 
 export default {
   migrations: {
     path: path.join(__dirname, './migrations'),
-    pattern: /^[w-]+\d+\.[tj]s$/
+    pattern: /^[w-]+\d+\.[tj]s$/,
   },
-  entities: [Post, Comment],
-  dbName: 'tax_credit_library',
+  entities: ['./entities'],
+  dbName: process.env.DB_NAME,
   type: 'mysql',
-  debug: !__prod__,
+  debug: process.env.NODE_ENV === 'development',
   host: process.env.DB_HOST,
   port: 3306,
-  user: 'admin',
+  user: process.env.DB_USER,
   password: process.env.DB_PASS,
-  allowGlobalContext: true
+  allowGlobalContext: true,
 } as Parameters<typeof MikroORM.init>[0];

@@ -1,6 +1,6 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
-@Entity()
+@Entity({ tableName: 'comments' })
 export class Comment {
   @PrimaryKey()
   id!: number;

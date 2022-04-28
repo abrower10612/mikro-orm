@@ -1,6 +1,8 @@
 # mikro-orm
 
-In order to set up MikroORM, a mikro-orm.config file is necessary as you see below. This file initializes the MikroORM connection and is referenced in each endpoint within each controller.
+In order to set up MikroORM, a mikro-orm.config file is necessary as you see
+below. This file initializes the MikroORM connection and is referenced in each
+endpoint within each controller.
 
 ## Installation
 
@@ -8,15 +10,27 @@ Select and run one of the following installations via CLI:
 
 ```
 npm i -s @mikro-orm/core @mikro-orm/mongodb     # for mongo
-npm i -s @mikro-orm/core @mikro-orm/mysql       # for mysql/mariadb
-npm i -s @mikro-orm/core @mikro-orm/mariadb     # for mysql/mariadb
+npm i -s @mikro-orm/core @mikro-orm/mysql       # for mysql
+npm i -s @mikro-orm/core @mikro-orm/mariadb     # for mysql
 npm i -s @mikro-orm/core @mikro-orm/postgresql  # for postgresql
 npm i -s @mikro-orm/core @mikro-orm/sqlite      # for sqlite
 ```
 
+## Add to package.json
+
+```json
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
+  }
+```
+
 ## Add to tsconfig.json 👇
 
-```
+```json
 "experimentalDecorators": true,
 "emitDecoratorMetadata": true,
 "esModuleInterop": true,
@@ -33,7 +47,7 @@ npx mikro-orm migration:pending   # List all pending migrations
 npx mikro-orm migration:fresh     # Drop the database and migrate up to the latest version
 ```
 
-## mikro-orm.config
+## mikro-orm.config.ts
 
 ```typescript
 export default {
@@ -55,22 +69,23 @@ export default {
 
 ## Entities
 
-Entities are simple javascript objects without restrictions and without the need to extend base classes. Every entity is required to have a primary key.
+Entities are simple javascript objects without restrictions and without the need
+to extend base classes. Every entity is required to have a primary key.
 
 ```typescript
 @Entity() // MikroORM decorator
 export class ClassNameHere {
   @PrimaryKey() // MikroORM decorator
-  id!: number // required
+  id!: number; // required
 
   @Property({ type: 'date' }) // MikroORM decorator with prop type for migration tool
-  createdAt? = new Date() // optional
+  createdAt? = new Date(); // optional
 
   @Property({ type: 'date', onUpdate: () => new Date() }) // MikroORM decorator with onUpdate function
-  updatedAt? = new Date() // optional
+  updatedAt? = new Date(); // optional
 
   @Property() // MikroORM decorator
-  title!: string // required
+  title!: string; // required
 }
 ```
 
@@ -78,19 +93,19 @@ export class ClassNameHere {
 
 ```typescript
 export const exampleEndpoint = async () => {
-  const { first, second } = req.body // destructure request body into separate variables
-  if (!first) return res.json({ message: 'Missing title' }) // error handling for required first prop
-  if (!second) return res.json({ message: 'Missing description' }) // error handling for required second prop
+  const { first, second } = req.body; // destructure request body into separate variables
+  if (!first) return res.json({ message: 'Missing title' }); // error handling for required first prop
+  if (!second) return res.json({ message: 'Missing description' }); // error handling for required second prop
 
   try {
-    const orm = await MikroORM.init(mikroConfig) // initialize MikroORM
-    const newRecord = { first, second } // new record to insert
-    const inserted = await orm.em.create(EntityNameHere, newPost) // insert record into database
-    if (!inserted) return res.json({ message: 'Insertion failed' }) // error handling
-    await orm.em.persistAndFlush(post) // persist record insertion and flush
-    res.json({ message: 'Post successfully created' }) // send successful response
+    const orm = await MikroORM.init(mikroConfig); // initialize MikroORM
+    const newRecord = { first, second }; // new record to insert
+    const inserted = await orm.em.create(EntityNameHere, newPost); // insert record into database
+    if (!inserted) return res.json({ message: 'Insertion failed' }); // error handling
+    await orm.em.persistAndFlush(post); // persist record insertion and flush
+    res.json({ message: 'Post successfully created' }); // send successful response
   } catch (err) {
-    throw new Error(err.message) // handle miscellaneous errors
+    throw new Error(err.message); // handle miscellaneous errors
   }
-}
+};
 ```
